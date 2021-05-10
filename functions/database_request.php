@@ -176,5 +176,25 @@ function get_employees_id($login, $password): mixed
     return null;
 }
 
+//TODO Получение ФИО и телефона по номеру заявки
+function get_user_info($id_request): ?array
+{
+    $link = connect();
+    $sql = ""; //здесь пиши запрос
+    $result = $link->query($sql);
+    close($link);
+    return $result->fetch_assoc();
+}
+
+//TODO получение перечня поломок по номеру заявки
+function get_all_defects_by_id($id_request): mysqli_result|bool
+{
+    $link = connect();
+    $sql = "";//здесь пиши запрос
+    $result = mysqli_query($link, $sql);
+    close($link);
+    return $result;
+}
+
 
 
