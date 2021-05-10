@@ -59,7 +59,8 @@ function sql_find_free_employee(): mysqli_result|bool
  * @param $phone - номер телефона пользователя
  * @return mixed
  */
-function sql_find_user_by_phone($phone) {
+function sql_find_user_by_phone($phone)
+{
     $link = connect();
     $sql = "SELECT id FROM users WHERE phone = '$phone'";
     $id_user = $link->query($sql)->fetch_assoc()['id'];
@@ -72,7 +73,8 @@ function sql_find_user_by_phone($phone) {
  * @param $name - имя пользователя
  * @param $phone - номер телефона
  */
-function sql_add_user($name, $phone) {
+function sql_add_user($name, $phone)
+{
     $link = connect();
     $sql = "insert into users(`name`, phone) values ('$name', '$phone')";
     $result = mysqli_query($link, $sql);
@@ -132,7 +134,9 @@ function get_defects_by_id($id): ?array
  * @param $login - логин
  * @param $password - пароль
  */
-function registration($name, $position, $login, $password) {
+function registration($name, $position, $login, $password)
+{
+    //fixme проверить нужна ли соль
     $enc_password = crypt($password);
     $sql = "insert into employees(`name`, `position`, login, password)
                         values('$name', '$position', '$login', '$enc_password')";
@@ -166,7 +170,7 @@ function checkEmployees($login, $password): bool
  */
 function get_employees_id($login, $password): mixed
 {
-    if (checkEmployees($login, $password)){
+    if (checkEmployees($login, $password)) {
         $mysqli = connect();
         $res = $mysqli->query("SELECT id FROM employees WHERE `login`='$login'");
         $temp = $res->fetch_assoc();
@@ -176,21 +180,35 @@ function get_employees_id($login, $password): mixed
     return null;
 }
 
-//TODO Получение ФИО и телефона по номеру заявки
+/**
+ * Получение ФИО, номер телефона, марки и модели автомобиля, дата создания заявки
+ * @param $id_request - идентификатор заявки
+ * @return array|null
+ */
 function get_user_info($id_request): ?array
 {
     $link = connect();
-    $sql = ""; //здесь пиши запрос
+    $sql = "SELECT u.name, u.phone, c.brand, c.model, r.creation_date FROM users u
+  JOIN request r ON u.id = r.id_user
+  JOIN cars c ON r.id_car = c.id
+  WHERE r.id='$id_request'";
     $result = $link->query($sql);
     close($link);
     return $result->fetch_assoc();
 }
 
-//TODO получение перечня поломок по номеру заявки
+/**
+ * Получение перечня поломок по номеру заявки
+ * @param $id_request  - идентификатор заявки
+ * @return mysqli_result|bool
+ */
 function get_all_defects_by_id($id_request): mysqli_result|bool
 {
     $link = connect();
-    $sql = "";//здесь пиши запрос
+    $sql = "SELECT d.name, rdf.id_request, r.appointment_date FROM defects d 
+  JOIN request_defects_fk rdf ON d.id = rdf.id_defects 
+  JOIN request r ON rdf.id_request = r.id
+  WHERE r.id='$id_request'";
     $result = mysqli_query($link, $sql);
     close($link);
     return $result;
