@@ -26,9 +26,21 @@ function close($link)
 function sql_find_all_car_by_employee($id_employee): mysqli_result|bool
 {
     $link = connect();
-    $sql = "SELECT r.id, c.brand, c.model FROM request r 
+    $sql = "SELECT r.id, c.brand, c.model, r.is_active, r.appointment_date, r.request_completed, r.repair_completed FROM request r 
   JOIN cars c ON r.id_car = c.id
-  WHERE r.id_employees='$id_employee'";
+  WHERE r.id_employees='$id_employee' 
+  order by r.creation_date";
+    $result = mysqli_query($link, $sql);
+    close($link);
+    return $result;
+}
+
+function sql_find_all_car_by_admin(): mysqli_result|bool
+{
+    $link = connect();
+    $sql = "SELECT r.id, c.brand, c.model, r.is_active, r.appointment_date, r.request_completed, r.repair_completed FROM request r 
+  JOIN cars c ON r.id_car = c.id 
+  order by r.creation_date";
     $result = mysqli_query($link, $sql);
     close($link);
     return $result;
@@ -87,7 +99,7 @@ function sql_add_user($name, $phone)
  * @param $id_car - идентификатор машины
  * @param $id_defects - массив идентификаторов поломки
  */
-function add_request($username, $phone, $id_car, $id_defects)
+function add_request($username, $phone, $id_car, $id_defects): int|string
 {
     $link = connect();
     //Проверка пользователя наличия
@@ -107,6 +119,7 @@ function add_request($username, $phone, $id_car, $id_defects)
     //сохранение поломок за конкретной заявкой
     save_defects($id_request, $id_defects);
     close($link);
+    return $id_request;
 }
 
 /**
@@ -161,13 +174,22 @@ function get_defects_by_id($id): ?array
  */
 function registration($name, $position, $login, $password)
 {
-    //fixme проверить нужна ли соль
-    $enc_password = crypt($password);
+    $enc_password = password_hash($password, PASSWORD_DEFAULT);
     $sql = "insert into employees(`name`, `position`, login, password)
                         values('$name', '$position', '$login', '$enc_password')";
     $link = connect();
     mysqli_query($link, $sql);
     close($link);
+}
+
+function exist_employees($login): bool
+{
+    if ($login == "") return false;
+    $link = connect();
+    $result = $link->query("SELECT * FROM employees WHERE `login`='$login'");
+    close($link);
+    return $result == false;
+
 }
 
 /**
@@ -179,38 +201,47 @@ function registration($name, $position, $login, $password)
 function checkEmployees($login, $password): bool
 {
     if (($login == "") || ($password == "")) return false;
-    $link = connectUsersDB();
+    $link = connect();
     $result = $link->query("SELECT password FROM employees WHERE `login`='$login'");
     $user = $result->fetch_assoc();
     $enc_password = $user['password'];
     close($link);
     return password_verify($password, $enc_password);
+//    return $enc_password == $password;
 }
 
 /**
  * Получение идентификатора работника по его логину и паролю
  * @param $login - логин работника
  * @param $password - пароль работника
- * @return mixed|null - идентификатор работника или null
+ * @return array|null - идентификатор работника или null
  */
-function get_employees_id($login, $password): mixed
+function get_employees($login, $password): ?array
 {
     if (checkEmployees($login, $password)) {
         $mysqli = connect();
-        $res = $mysqli->query("SELECT id FROM employees WHERE `login`='$login'");
+        $res = $mysqli->query("SELECT id, `name` FROM employees WHERE `login`='$login'");
         $temp = $res->fetch_assoc();
         close($mysqli);
-        return $temp['id'];
+        return $temp;
     }
     return null;
+}
+
+function get_position_employees($login)
+{
+    $link = connect();
+    $res = $link->query("SELECT `position` from employees where login = '$login'");
+    close($link);
+    return $res->fetch_assoc()['position'];
 }
 
 /**
  * Получение ФИО, номер телефона, марки и модели автомобиля, дата создания заявки
  * @param $id_request - идентификатор заявки
- * @return array|null
+ * @return array
  */
-function get_user_info($id_request): ?array
+function get_user_info($id_request): array
 {
     $link = connect();
     $sql = "SELECT u.name, u.phone, c.brand, c.model, r.creation_date FROM users u
@@ -230,13 +261,36 @@ function get_user_info($id_request): ?array
 function get_all_defects_by_id($id_request): mysqli_result|bool
 {
     $link = connect();
-    $sql = "SELECT d.id, d.name, rdf.id_request, r.appointment_date FROM defects d 
+    $sql = "SELECT d.id, d.name, rdf.id_request, r.appointment_date, rdf.repair_completed FROM defects d 
   JOIN request_defects_fk rdf ON d.id = rdf.id_defects 
   JOIN request r ON rdf.id_request = r.id
   WHERE r.id='$id_request'";
     $result = mysqli_query($link, $sql);
     close($link);
     return $result;
+}
+
+function get_all_requests_by_id_user($id_user): mysqli_result|bool
+{
+    $link = connect();
+    $sql = "select r.appointment_date, r.request_completed, r.repair_completed, r.is_active, r.creation_date, e.name from request r join employees e on e.id = r.id_employees where id_user = '$id_user'";
+    $res = mysqli_query($link, $sql);
+    close($link);
+    return $res;
+}
+
+function get_all_requests_by_phone($phone): mysqli_result|bool
+{
+    $user = get_user_by_phone($phone);
+    return get_all_requests_by_id_user($user->fetch_assoc()['id']);
+}
+
+function get_user_by_phone($phone): mysqli_result|bool
+{
+    $link = connect();
+    $user = $link->query("select * from users where phone = '$phone'") or die($link->error);
+    close($link);
+    return $user;
 }
 
 /**
@@ -262,7 +316,7 @@ function get_all_spare_part_by_id_defects($id_defects): mysqli_result|bool
 function set_appointment($id_request)
 {
     $link = connect();
-    $sql = "insert into request(`appointment_date`) values (CURRENT_DATE) where id = '$id_request'";
+    $sql = "update request set `appointment_date` = CURRENT_DATE where id = '$id_request'";
     mysqli_query($link, $sql);
 
     close($link);
@@ -272,10 +326,20 @@ function set_appointment($id_request)
  * Функция установки флага завершения починки
  * @param $id_request - идентификатор заявки
  */
-function set_repair_completed($id_request)
+function set_repair_completed_request($id_request)
 {
     $link = connect();
-    $sql = "insert into request(`repair_completed`) values (1) where id = '$id_request'";
+    $sql = "update request set `repair_completed` = 1 where id = '$id_request'";
+
+    mysqli_query($link, $sql);
+
+    close($link);
+}
+function set_repair_completed_defects($id_request, $id_defects)
+{
+    $link = connect();
+    $sql = "update request_defects_fk set `repair_completed` = 1 where id_request = '$id_request' and id_defects = '$id_defects'";
+
     mysqli_query($link, $sql);
 
     close($link);
@@ -288,7 +352,7 @@ function set_repair_completed($id_request)
 function set_request_completed($id_request)
 {
     $link = connect();
-    $sql = "insert into request(`request_completed`) values (1) where id = '$id_request'";
+    $sql = "update request set `request_completed` = 1 where id = '$id_request'";
     mysqli_query($link, $sql);
 
     close($link);
@@ -326,7 +390,7 @@ function change_count_of_spare_part($id_spare_part, $counter): bool
         $bool = false;
     }
     $changed_count = $count + $counter;
-    $sql = "insert into spare_part(`count`) values ('$changed_count') where id = '$id_spare_part'";
+    $sql = "update spare_part set `count` = '$changed_count' where id = '$id_spare_part'";
     mysqli_query($link, $sql);
     close($link);
     return $bool;
@@ -377,9 +441,36 @@ function rollback_reservation_spare_part($id_request)
 function change_active($id_request, $bit)
 {
     $link = connect();
-    $link->query("insert into request(`is_active`) values ('$bit') where id = '$id_request'");
+    $link->query("update request set `is_active` = '$bit' where id = '$id_request'");
     close($link);
 }
+
+/**
+ * Получение списка автомобилей
+ * @return bool|mysqli_result
+ */
+function get_all_cars(): mysqli_result|bool
+{
+    $link = connect();
+    $sql = "select * from cars";
+    $result = mysqli_query($link, $sql);
+    close($link);
+    return $result;
+}
+
+/**
+ * Получение списка поломок
+ * @return bool|mysqli_result
+ */
+function get_all_defects(): mysqli_result|bool
+{
+    $link = connect();
+    $sql = "select * from defects";
+    $result = mysqli_query($link, $sql);
+    close($link);
+    return $result;
+}
+
 
 
 

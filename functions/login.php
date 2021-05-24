@@ -1,9 +1,9 @@
 <?php
-
+require_once("../functions/database_request.php");
+session_start();
 /**
  * Обработка нажатия кнопки "Авторизация"
  */
-//TODO Исправить названия полей для авторизации работника
 if (isset($_POST['log'])) {
 
     $login = $_POST['login'];
@@ -13,9 +13,13 @@ if (isset($_POST['log'])) {
     if ($check) {
         $_SESSION['login'] = $login;
         $_SESSION['password'] = $password;
-        header("Location: index.php");
+            $position = get_position_employees($login);
+        $_SESSION['position'] = $position;
+        $_SESSION['authorized'] = true;
+        header("Location: /admin.php");
         exit;
     } else {
         $_SESSION['error'] = 1;
+        header("Location: /login_admin.php");
     }
 }
