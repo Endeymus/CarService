@@ -51,7 +51,7 @@ if (isset($_SESSION['login'])) {
             <div class="g-bg-main g-brd-primary g-my-30 ">
                 <h2 class="h3 text-center">Заявка на ремонт автомобиля</h2>
             </div>
-            <form action="functions/add_request.php" class="g-brd-around g-brd-gray-light-v4 g-pa-30 g-mb-30">
+            <form action="functions/add_request.php" method="post" class="g-brd-around g-brd-gray-light-v4 g-pa-30 g-mb-30">
                 <div class="form-group g-mb-20">
                     <label class="g-mb-10">ФИО</label>
                     <div class="input-group g-brd-primary--focus">
@@ -114,13 +114,12 @@ if (isset($_SESSION['login'])) {
     </section>
     <!-- End Section Content -->
 
-    <footer>
-
-        <div class="container-fluid text-center g-color-gray-dark-v5 g-pt-40">
-            <a class="d-inline-block g-mb-25" href="/"> <img src="assets/img/logo-dark.png" alt="Logo"> </a>
-            <p class="g-mb-30">In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.</p>
-        </div>
-    </footer>
+        <footer>
+            <div class="container-fluid text-center g-color-gray-dark-v5 g-pt-40">
+                <a class="d-inline-block g-mb-25" href="/"> <img src="/assets/img/logo-dark.png" alt="Logo"> </a>
+                <p class="g-mb-30">Created by Kate Komissarova in 2021</p>
+            </div>
+        </footer>
     <!-- End Footer -->
 
     <a class="js-go-to u-go-to-v1" href="#"

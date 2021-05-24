@@ -48,9 +48,8 @@ function sql_find_all_car_by_admin(): mysqli_result|bool
 
 /**
  * Получение идентификатора менее занятого работника
- * @return mysqli_result|bool
  */
-function sql_find_free_employee(): mysqli_result|bool
+function sql_find_free_employee()
 {
     $link = connect();
     $sql = "SELECT G.id_employees FROM (
@@ -61,9 +60,12 @@ function sql_find_free_employee(): mysqli_result|bool
   SELECT COUNT(request.id_employees) AS count FROM request GROUP BY request.id_employees
   ) AS T) 
   LIMIT 1 ";
-    $result = $link->query($sql)->fetch_assoc()['id_employees'];
+    $result = mysqli_query($link, $sql);
+    $tmp = mysqli_fetch_assoc($result);
+//    var_dump($result);
+//    var_dump($result['id_employees']);
     close($link);
-    return $result;
+    return $tmp['id_employees'];
 }
 
 /**
@@ -107,15 +109,20 @@ function add_request($username, $phone, $id_car, $id_defects): int|string
     if ($id_user == null) {
         sql_add_user($username, $phone);
     }
+//        var_dump($id_user);
     //подсчет итоговой стоимости
     $cost = calc_cost($id_defects);
+//        var_dump($cost);
     //поиск менее занятого работника
     $id_employees = sql_find_free_employee();
-    $sql = "INSERT INTO request (id_user, creation_date, id_car, id_employees, cost)
-  VALUES ('$id_user', CURDATE(), '$id_car', '$id_employees', '$cost');";
+//        var_dump($id_employees);
+    $sql = "INSERT INTO `request` (`id_user`, `creation_date`, `id_car`, `id_employees`, `cost`)
+  VALUES ('$id_user', CURRENT_DATE, '$id_car', '$id_employees', '$cost');";
     //создание новой заявки
-    mysqli_query($link, $sql);
+    $ret = mysqli_query($link, $sql);
+//        var_dump($ret);
     $id_request = mysqli_insert_id($link);
+//        var_dump($id_request);
     //сохранение поломок за конкретной заявкой
     save_defects($id_request, $id_defects);
     close($link);
@@ -261,7 +268,7 @@ function get_user_info($id_request): array
 function get_all_defects_by_id($id_request): mysqli_result|bool
 {
     $link = connect();
-    $sql = "SELECT d.id, d.name, rdf.id_request, r.appointment_date, rdf.repair_completed FROM defects d 
+    $sql = "SELECT d.id FROM defects d 
   JOIN request_defects_fk rdf ON d.id = rdf.id_defects 
   JOIN request r ON rdf.id_request = r.id
   WHERE r.id='$id_request'";
@@ -296,12 +303,11 @@ function get_user_by_phone($phone): mysqli_result|bool
 /**
  * Получение всех запчастей конкретной поломки
  * @param $id_defects - идентификатор поломки
- * @return mysqli_result|bool
  */
-function get_all_spare_part_by_id_defects($id_defects): mysqli_result|bool
+function get_all_spare_part_by_id_defects($id_defects)
 {
     $link = connect();
-    $sql = "SELECT s.id, s.cost, s.name, s.count FROM spare_part s 
+    $sql = "SELECT s.id FROM spare_part s 
   JOIN defects_spare_part_fk dspf ON s.id = dspf.id_spare_part 
   WHERE dspf.id_defects = '$id_defects'";
     $result = mysqli_query($link, $sql);
@@ -335,6 +341,7 @@ function set_repair_completed_request($id_request)
 
     close($link);
 }
+
 function set_repair_completed_defects($id_request, $id_defects)
 {
     $link = connect();
@@ -385,7 +392,7 @@ function change_count_of_spare_part($id_spare_part, $counter): bool
 {
     $bool = true;
     $link = connect();
-    $count = $link->query("select s.count from spare_part where id = '$id_spare_part'")->fetch_assoc()['count'];
+    $count = $link->query("select s.count from spare_part s where id = '$id_spare_part'")->fetch_assoc()['count'];
     if ($count <= 0) {
         $bool = false;
     }
@@ -400,14 +407,14 @@ function change_count_of_spare_part($id_spare_part, $counter): bool
  * Резервирование запчастей конкретной заявки
  * @param $id_request - идентификатор заявки
  */
-function reservation_spare_part($id_request): bool
+function reservation_spare_part($id_request)
 {
-    $defects = mysqli_fetch_array(get_all_defects_by_id($id_request));
+    $defects = mysqli_fetch_assoc(get_all_defects_by_id($id_request));
     $bool = true;
     for ($i = 0; $i < count($defects); $i++) {
-        $spare_parts = mysqli_fetch_array(get_all_spare_part_by_id_defects($defects[$i]['id']));
-        for($j = 0; $j < count($spare_parts); $j++) {
-            $id_spare_part = $spare_parts[$j]['id'];
+        $spare_parts = mysqli_fetch_assoc(get_all_spare_part_by_id_defects($defects['id']));
+        for ($j = 0; $j < count($spare_parts); $j++) {
+            $id_spare_part = $spare_parts['id'];
             $ret = reduce_count_of_spare_part($id_spare_part);
             if ($ret == false) {
                 $bool = false;
@@ -423,11 +430,11 @@ function reservation_spare_part($id_request): bool
  */
 function rollback_reservation_spare_part($id_request)
 {
-    $defects = mysqli_fetch_array(get_all_defects_by_id($id_request));
+    $defects = mysqli_fetch_assoc(get_all_defects_by_id($id_request));
     for ($i = 0; $i < count($defects); $i++) {
-        $spare_parts = mysqli_fetch_array(get_all_spare_part_by_id_defects($defects[$i]['id']));
-        for($j = 0; $j < count($spare_parts); $j++) {
-            $id_spare_part = $spare_parts[$j]['id'];
+        $spare_parts = mysqli_fetch_assoc(get_all_spare_part_by_id_defects($defects['id']));
+        for ($j = 0; $j < count($spare_parts); $j++) {
+            $id_spare_part = $spare_parts['id'];
             increase_count_of_spare_part($id_spare_part);
         }
     }

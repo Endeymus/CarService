@@ -76,7 +76,7 @@ if (isset($_SESSION['login'])) {
                     $sql = get_all_requests_by_phone($phone);
                     $i = 1;
                     while ($res = mysqli_fetch_array($sql)) {
-                        if ($res['is_active'] == 1 and $res['repair_completed'] == 0 and $res['request_completed'] == 0)
+                        if ($res['is_active'] == 1 and $res['repair_completed'] == 0 and $res['request_completed'] == 0 and $res['is_active'] == 1)
                             echo '<tr>
                         <td>'.$i++.'</td>
                         <td>'.$res["name"].'</td>
@@ -88,7 +88,7 @@ if (isset($_SESSION['login'])) {
                     }
                     $sql = get_all_requests_by_phone($phone);
                     while ($res = mysqli_fetch_array($sql)) {
-                        if ($res['repair_completed'] == 1 and $res['request_completed'] == 0)
+                        if ($res['repair_completed'] == 1 and $res['request_completed'] == 0 and $res['is_active'] == 1)
                             echo '<tr>
                         <td>'.$i++.'</td>
                         <td>'.$res["name"].'</td>
@@ -112,7 +112,7 @@ if (isset($_SESSION['login'])) {
                     }
                     $sql = get_all_requests_by_phone($phone);
                     while ($res = mysqli_fetch_array($sql)) {
-                        if ($res['request_completed'] == 1)
+                        if ($res['request_completed'] == 1 and $res['is_active'] == 1)
                             echo '<tr>
                         <td>'.$i++.'</td>
                         <td>'.$res["name"].'</td>
