@@ -14,7 +14,6 @@ if (isset($_SESSION['login'])) {
     $authorized = false;
     $position = 'Пользователь';
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -76,7 +75,7 @@ if (isset($_SESSION['login'])) {
                     $sql = get_all_requests_by_phone($phone);
                     $i = 1;
                     while ($res = mysqli_fetch_array($sql)) {
-                        if ($res['is_active'] == 1 and $res['repair_completed'] == 0 and $res['request_completed'] == 0 and $res['is_active'] == 1)
+                        if ($res['is_active'] == 1 and $res['repair_completed'] == 0 and $res['request_completed'] == 0 and $res['appointment_date'] != null)
                             echo '<tr>
                         <td>'.$i++.'</td>
                         <td>'.$res["name"].'</td>
@@ -100,13 +99,25 @@ if (isset($_SESSION['login'])) {
                     }
                     $sql = get_all_requests_by_phone($phone);
                     while ($res = mysqli_fetch_array($sql)) {
+                        if ($res['appointment_date'] == null and $res['is_active'] == 1)
+                            echo '<tr>
+                        <td>'.$i++.'</td>
+                        <td>'.$res["name"].'</td>
+                        <td>'.$res["creation_date"].'</td>
+                        <td>
+                            <span class="u-label u-label-success g-color-white">В ожидании</span>
+                        </td>
+                    </tr>';
+                    }
+                    $sql = get_all_requests_by_phone($phone);
+                    while ($res = mysqli_fetch_array($sql)) {
                         if ($res['is_active'] == 0)
                             echo '<tr class="table-secondary">
                         <td>'.$i++.'</td>
                         <td>'.$res["name"].'</td>
                         <td>'.$res["creation_date"].'</td>
                         <td>
-                            <span class="u-label u-label-secondary g-color-white">В ожидании деталей</span>
+                            <span class="u-label u-label-info g-color-white">В ожидании деталей</span>
                         </td>
                     </tr>';
                     }

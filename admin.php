@@ -149,7 +149,7 @@ $name = $employyes['name'];
                     <td>'.$i++.'</td>
                     <td>'.$row['brand'].'</td>
                     <td>'.$row['model'].'</td>
-                    <td><button type="button" class="btn btn-primary g-mr-10 g-mb-15">В ремонте</button></td>
+                    <td><button type="button" class="btn btn-primary g-mr-10 g-mb-15">В работе</button></td>
                 </tr>';
                         }
                         $res = sql_find_all_car_by_admin();

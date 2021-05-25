@@ -71,13 +71,13 @@ function sql_find_free_employee()
 /**
  * Получение идентификатора пользователя по номеру телефона
  * @param $phone - номер телефона пользователя
- * @return mixed
  */
-function sql_find_user_by_phone($phone): mixed
+function sql_find_user_by_phone($phone)
 {
     $link = connect();
     $sql = "SELECT id FROM users WHERE phone = '$phone'";
-    $id_user = $link->query($sql)->fetch_assoc()['id'];
+    $id_user = mysqli_query($link, $sql);
+//    print_r($id_user->num_rows);
     close($link);
     return $id_user;
 }
@@ -105,11 +105,12 @@ function add_request($username, $phone, $id_car, $id_defects): int|string
 {
     $link = connect();
     //Проверка пользователя наличия
-    $id_user = sql_find_user_by_phone($phone);
-    if ($id_user == null) {
+    $user = sql_find_user_by_phone($phone);
+    if ($user === FALSE || $user->num_rows == 0) {
         sql_add_user($username, $phone);
     }
-//        var_dump($id_user);
+    $user = sql_find_user_by_phone($phone);
+    $id_user = $user->fetch_assoc()['id'];
     //подсчет итоговой стоимости
     $cost = calc_cost($id_defects);
 //        var_dump($cost);
