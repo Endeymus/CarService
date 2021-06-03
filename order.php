@@ -14,6 +14,7 @@ if (isset($_SESSION['login'])) {
     $authorized = false;
     $position = 'Пользователь';
 }
+$user = get_user_by_phone($phone)->fetch_assoc();
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -59,6 +60,9 @@ if (isset($_SESSION['login'])) {
 
         <!-- Section Content -->
         <section class="container">
+            <div class="g-my-20">
+                <h2 class="h3">Здравствуйте, <?php echo $user['name']?></h2>
+            </div>
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
@@ -70,7 +74,7 @@ if (isset($_SESSION['login'])) {
                     </tr>
                     </thead>
 
-                    <tbody>
+                    <tbody class="g-color-black">
                     <?php
                     $sql = get_all_requests_by_phone($phone);
                     $i = 1;
@@ -146,7 +150,7 @@ if (isset($_SESSION['login'])) {
         <footer>
             <div class="container-fluid text-center g-color-gray-dark-v5 g-pt-40">
                 <a class="d-inline-block g-mb-25" href="/"> <img src="/assets/img/logo-dark.png" alt="Logo"> </a>
-                <p class="g-mb-30">In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo.</p>
+                <p class="g-mb-30">Created by Kate Komissarova in 2021</p>
             </div>
         </footer>
         <!-- End Footer -->

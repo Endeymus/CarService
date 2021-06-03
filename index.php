@@ -53,7 +53,7 @@ if (isset($_SESSION['login'])) {
             </div>
             <form action="functions/add_request.php" method="post" class="g-brd-around g-brd-gray-light-v4 g-pa-30 g-mb-30">
                 <div class="form-group g-mb-20">
-                    <label class="g-mb-10">ФИО</label>
+                    <label class="g-mb-10 g-color-black">ФИО</label>
                     <div class="input-group g-brd-primary--focus">
                         <div class="input-group-prepend">
                             <span class="input-group-text rounded-0 g-bg-white g-color-gray-light-v1"><i
@@ -64,7 +64,7 @@ if (isset($_SESSION['login'])) {
                     </div>
                 </div>
                 <div class="form-group g-mb-20">
-                    <label class="g-mb-10">Номер телефона</label>
+                    <label class="g-mb-10 g-color-black">Номер телефона</label>
                     <div class="input-group g-brd-primary--focus">
                         <div class="input-group-prepend">
                             <span class="input-group-text rounded-0 g-bg-white g-color-gray-light-v1"><i
@@ -76,7 +76,7 @@ if (isset($_SESSION['login'])) {
                     </div>
                 </div>
                 <div class="form-group g-mb-20">
-                    <label for="exampleSelect1">Марка и модель автомобиля</label>
+                    <label for="exampleSelect1" class="g-color-black">Марка и модель автомобиля</label>
                     <select name="id_car" class="form-control rounded-0" id="exampleSelect1" required>
                         <option value="0" selected disabled>Выберите марку и модель</option>
                         <?php
@@ -90,7 +90,7 @@ if (isset($_SESSION['login'])) {
                 </div>
                 <div class="form-group g-mb-20">
                     <button type="button" onclick="add()" name="send_request" class="btn btn-md u-btn-primary rounded-0">Добавить еще поломку</button>
-                    <label for="exampleSelect2">Поломка</label>
+                    <label for="exampleSelect2" class="g-color-black">Поломка</label>
                     <select name="id_defects[]" onchange="cost(this)" class="form-control rounded-0" id="exampleSelect2"
                             required>
                         <option data-id="0" value="0" selected disabled>Выберите поломку</option>
@@ -102,8 +102,8 @@ if (isset($_SESSION['login'])) {
                     </select>
 
                 </div>
-                <div class="form-group u-has-disabled-v1 g-mb-20">
-                    <label class="g-mb-10" for="inputGroup1_1">Цена ремонта</label>
+                <div class="form-group  g-mb-20">
+                    <label class="g-mb-10 g-color-black" for="inputGroup1_1">Цена ремонта</label>
                     <input id="inputGroup1_1" class="form-control form-control-md rounded-0" type="email" disabled="">
                     <small class="form-control-feedback">Поле расчитывается автоматически</small>
                 </div>

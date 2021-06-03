@@ -4,7 +4,7 @@ require_once('functions/database_request.php');
 if (isset($_SESSION['login'])) {
     $login = $_SESSION['login'];
     $position = $_SESSION['position'];
-    $authorized =  $_SESSION['authorized'];
+    $authorized = $_SESSION['authorized'];
 } else {
     header("Location: /index.php");
 }
@@ -59,80 +59,89 @@ if (isset($_GET['defects'])) {
 <main>
     <!-- Header -->
     <header id="js-header" class="u-header">
-    <?php include './blocks/header.php' ?>
-    <!-- End Header -->
+        <?php include './blocks/header.php' ?>
+        <!-- End Header -->
 
-    <!-- Section Content -->
-    <section class="container">
-        <div class="g-my-20">
-            <h2 class="h3">Подробная информация об автомобиле</h2>
-        </div>
-        <div class="g-bg-secondary">
-            <form class="g-brd-around g-brd-gray-light-v4 g-pa-30 g-mb-30">
-                <div class="form-group row g-mb-25">
-                    <label for="example-text-input" class="col-2 col-form-label">Номер заявки</label>
-                    <div class="col-10">
-                        <input class="form-control rounded-0 form-control-md" type="text" value="<?php echo $id_request ?>"
-                               id="example-text-input" readonly>
+        <!-- Section Content -->
+        <section class="container">
+            <div class="g-my-20">
+                <h2 class="h3">Подробная информация об автомобиле</h2>
+            </div>
+            <div class="g-bg-secondary">
+                <form class="g-brd-around g-brd-gray-light-v4 g-pa-30 g-mb-30">
+                    <div class="form-group row g-mb-25">
+                        <label for="example-text-input" class="col-2 col-form-label g-color-black">Номер заявки</label>
+                        <div class="col-10">
+                            <input class="form-control rounded-0 form-control-md" type="text"
+                                   value="<?php echo $id_request ?>"
+                                   id="example-text-input" readonly>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group row g-mb-25">
-                    <label for="example-text-input" class="col-2 col-form-label">ФИО пользователя</label>
-                    <div class="col-10">
-                        <input class="form-control rounded-0 form-control-md" type="text" value="<?php echo $info['name'] ?>"
-                               id="example-text-input" readonly>
+                    <div class="form-group row g-mb-25">
+                        <label for="example-text-input" class="col-2 col-form-label g-color-black">ФИО
+                            пользователя</label>
+                        <div class="col-10">
+                            <input class="form-control rounded-0 form-control-md" type="text"
+                                   value="<?php echo $info['name'] ?>"
+                                   id="example-text-input" readonly>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group row g-mb-25">
-                    <label for="example-text-input" class="col-2 col-form-label">Номер телефона</label>
-                    <div class="col-10">
-                        <input class="form-control rounded-0 form-control-md" type="text" value="<?php echo $info['phone'] ?>"
-                               id="example-text-input" readonly>
+                    <div class="form-group row g-mb-25">
+                        <label for="example-text-input" class="col-2 col-form-label g-color-black">Номер
+                            телефона</label>
+                        <div class="col-10">
+                            <input class="form-control rounded-0 form-control-md" type="text"
+                                   value="<?php echo $info['phone'] ?>"
+                                   id="example-text-input" readonly>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group row g-mb-25">
-                    <label for="example-text-input" class="col-2 col-form-label">Марка</label>
-                    <div class="col-10">
-                        <input class="form-control rounded-0 form-control-md" type="text" value="<?php echo $info['brand'] ?>"
-                               id="example-text-input" readonly>
+                    <div class="form-group row g-mb-25">
+                        <label for="example-text-input" class="col-2 col-form-label g-color-black">Марка</label>
+                        <div class="col-10">
+                            <input class="form-control rounded-0 form-control-md" type="text"
+                                   value="<?php echo $info['brand'] ?>"
+                                   id="example-text-input" readonly>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group row g-mb-25">
-                    <label for="example-text-input" class="col-2 col-form-label">Модель</label>
-                    <div class="col-10">
-                        <input class="form-control rounded-0 form-control-md" type="text" value="<?php echo $info['model'] ?>"
-                               id="example-text-input" readonly>
+                    <div class="form-group row g-mb-25">
+                        <label for="example-text-input" class="col-2 col-form-label g-color-black">Модель</label>
+                        <div class="col-10">
+                            <input class="form-control rounded-0 form-control-md" type="text"
+                                   value="<?php echo $info['model'] ?>"
+                                   id="example-text-input" readonly>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group row g-mb-25">
-                    <label for="example-text-input" class="col-2 col-form-label">Перечень поломок</label>
-                    <div class="col-10">
-                        <?php
-                        $res = get_all_defects_by_id($id_request);
-                        while ($row = mysqli_fetch_array($res)) {
-                            if ($row['repair_completed'] == 0) {
-                            echo '<div class="row">
-                            <div class="col">'.$row['name'].'</div>
+                    <div class="form-group row g-mb-25">
+                        <label for="example-text-input" class="col-2 col-form-label g-color-black">Перечень
+                            поломок</label>
+                        <div class="col-10">
+                            <?php
+                            $res = get_all_defects_by_id($id_request);
+                            while ($row = mysqli_fetch_array($res)) {
+                                if ($row['repair_completed'] == 0) {
+                                    echo '<div class="row">
+                            <div class="col g-color-black">' . $row['name'] . '</div>
                             <div class="col">
-                                <button type="button" onclick="document.location.href=\'/admin_fol.php?id='.$id_request.'&defects='.$row['id'].'\'" class="btn btn-success g-mr-10 g-mb-15 btn-block">Завершить
+                                <button type="button" onclick="document.location.href=\'/admin_fol.php?id=' . $id_request . '&defects=' . $row['id'] . '\'" class="btn btn-success g-mr-10 g-mb-15 btn-block">Завершить
                                 </button>
                             </div>
-                        </div>'; } else
-                                echo '<div class="row">
-                            <div class="col">'.$row['name'].'</div>
+                        </div>';
+                                } else
+                                    echo '<div class="row">
+                            <div class="col">' . $row['name'] . '</div>
                             <div class="col">
                                 <button type="button" class="btn btn-secondary g-mr-10 g-mb-15 btn-block">Завершено</button>
                             </div>
                         </div>';
-                        }
-                        ?>
+                            }
+                            ?>
 
+                        </div>
                     </div>
-                </div>
-            </form>
-        </div>
-    </section>
-    <!-- End Section Content -->
+                </form>
+            </div>
+        </section>
+        <!-- End Section Content -->
 
 
         <footer>
@@ -141,17 +150,17 @@ if (isset($_GET['defects'])) {
                 <p class="g-mb-30">Created by Kate Komissarova in 2021</p>
             </div>
         </footer>
-    <!-- End Footer -->
+        <!-- End Footer -->
 
-    <a class="js-go-to u-go-to-v1" href="#"
-       data-type="fixed"
-       data-position='{
+        <a class="js-go-to u-go-to-v1" href="#"
+           data-type="fixed"
+           data-position='{
            "bottom": 15,
            "right": 15
          }'
-       data-offset-top="400"
-       data-compensation="#js-header"
-       data-show-effect="zoomIn"> <i class="hs-icon hs-icon-arrow-top"></i> </a>
+           data-offset-top="400"
+           data-compensation="#js-header"
+           data-show-effect="zoomIn"> <i class="hs-icon hs-icon-arrow-top"></i> </a>
 </main>
 
 <!-- JS Global Compulsory -->

@@ -49409,3 +49409,6 @@ a:hover, a:active, a:focus {
     color: #9dba04;
   }
 }
+.fw-bold {
+    font-weight: 700!important;
+}
