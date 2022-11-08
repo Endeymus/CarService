@@ -70,6 +70,7 @@ $user = get_user_by_phone($phone)->fetch_assoc();
                         <th>#</th>
                         <th>Исполнитель</th>
                         <th>Дата создания заявки</th>
+                        <th>Дата завершения</th>
                         <th>Статус заявки</th>
                     </tr>
                     </thead>
@@ -84,6 +85,7 @@ $user = get_user_by_phone($phone)->fetch_assoc();
                         <td>'.$i++.'</td>
                         <td>'.$res["name"].'</td>
                         <td>'.$res["creation_date"].'</td>
+                        <td>'.$res['end_date'].'</td>
                         <td>
                             <span class="u-label u-label-danger g-color-white">В работе</span>
                         </td>
@@ -96,6 +98,7 @@ $user = get_user_by_phone($phone)->fetch_assoc();
                         <td>'.$i++.'</td>
                         <td>'.$res["name"].'</td>
                         <td>'.$res["creation_date"].'</td>
+                        <td>'.$res['end_date'].'</td>
                         <td>
                             <span class="u-label u-label-info g-color-white">Готов к выдаче</span>
                         </td>
@@ -108,6 +111,7 @@ $user = get_user_by_phone($phone)->fetch_assoc();
                         <td>'.$i++.'</td>
                         <td>'.$res["name"].'</td>
                         <td>'.$res["creation_date"].'</td>
+                        <td></td>
                         <td>
                             <span class="u-label u-label-success g-color-white">В ожидании</span>
                         </td>
@@ -120,6 +124,7 @@ $user = get_user_by_phone($phone)->fetch_assoc();
                         <td>'.$i++.'</td>
                         <td>'.$res["name"].'</td>
                         <td>'.$res["creation_date"].'</td>
+                        <td></td>
                         <td>
                             <span class="u-label u-label-info g-color-white">В ожидании деталей</span>
                         </td>
@@ -132,6 +137,7 @@ $user = get_user_by_phone($phone)->fetch_assoc();
                         <td>'.$i++.'</td>
                         <td>'.$res["name"].'</td>
                         <td>'.$res["creation_date"].'</td>
+                        <td>'.$res['end_date'].'</td>
                         <td>
                             <span class="u-label u-label-success g-color-white">Завершено</span>
                         </td>

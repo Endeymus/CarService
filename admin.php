@@ -82,6 +82,8 @@ $name = $employyes['name'];
                     <th>#</th>
                     <th>Марка автомобиля</th>
                     <th>Модель</th>
+                    <th>Дата создания</th>
+                    <th>Дата завершения</th>
                     <?php
                     if ($position == 'Администратор')
                         echo '<th>Мастер</th>';
@@ -101,7 +103,8 @@ $name = $employyes['name'];
                     <td>'.$i++.'</td>
                     <td><a href="/admin_fol.php?id='.$row['id'].'"> '.$row['brand'].'</a></td>
                     <td>'.$row['model'].'</td>
-                    
+                    <td>'.$row['creation_date'].'</td>
+                    <td></td>
                     <td><button type="button" onclick="document.location.href=\'/admin.php?repair='.$row['id'].'\'" class="btn btn-primary g-mr-10 g-mb-15">Завершить работу</button></td>
                 </tr>';
                         }
@@ -112,6 +115,9 @@ $name = $employyes['name'];
                     <td>'.$i++.'</td>
                     <td><a href="/admin_fol.php?id='.$row['id'].'"> '.$row['brand'].'</a></td>
                     <td>'.$row['model'].'</td>
+                    <td>'.$row['creation_date'].'</td>
+                    <td></td>
+                    
                     
                     <td><button type="button" onclick="document.location.href=\'/admin.php?appoint='.$row['id'].'\'" class="btn btn-danger g-mr-10 g-mb-15">Начать работу</button></td>
                 </tr>';
@@ -123,7 +129,8 @@ $name = $employyes['name'];
                     <td>'.$i++.'</td>
                     <td><a href="/admin_fol.php?id='.$row['id'].'"> '.$row['brand'].'</a></td>
                     <td>'.$row['model'].'</td>
-                    
+                    <td>'.$row['creation_date'].'</td>
+                    <td></td>
                     <td><button type="button" onclick="document.location.href=\'/admin.php?request='.$row['id'].'\'" class="btn btn-success g-mr-10 g-mb-15">Закрыть заявку</button></td>
                 </tr>';
                         }
@@ -134,7 +141,8 @@ $name = $employyes['name'];
                     <td>'.$i++.'</td>
                     <td><a href="/admin_fol.php?id='.$row['id'].'"> '.$row['brand'].'</a></td>
                     <td>'.$row['model'].'</td>
-                    
+                    <td>'.$row['creation_date'].'</td>
+                    <td></td>
                     <td><button type="button" onclick="document.location.href=\'/admin.php?check='.$row['id'].'\'" class="btn btn-info g-mr-10 g-mb-15">Проверить наличие деталей</button></td>
                 </tr>';
                         }
@@ -145,7 +153,8 @@ $name = $employyes['name'];
                     <td>'.$i++.'</td>
                     <td><a href="/admin_fol.php?id='.$row['id'].'"> '.$row['brand'].'</a></td>
                     <td>'.$row['model'].'</td>
-                    
+                    <td>'.$row['creation_date'].'</td>
+                    <td>'.$row['end_date'].'</td>
                     <td><button type="button" class="btn btn-secondary g-mr-10 g-mb-15">Завершено</button></td>
                 </tr>';
                         }}
@@ -158,6 +167,8 @@ $name = $employyes['name'];
                     <td>'.$i++.'</td>
                     <td>'.$row['brand'].'</td>
                     <td>'.$row['model'].'</td>
+                    <td>'.$row['creation_date'].'</td>
+                    <td></td>
                     <td>'.$row['name'].'</td>
                     <td><button type="button" class="btn btn-primary g-mr-10 g-mb-15">В работе</button></td>
                 </tr>';
@@ -169,6 +180,8 @@ $name = $employyes['name'];
                     <td>'.$i++.'</td>
                     <td>'.$row['brand'].'</td>
                     <td>'.$row['model'].'</td>
+                    <td>'.$row['creation_date'].'</td>
+                    <td></td>
                     <td>'.$row['name'].'</td>
                     <td><button type="button" class="btn btn-danger g-mr-10 g-mb-15">Ожидает ремонта</button></td>
                 </tr>';
@@ -180,6 +193,8 @@ $name = $employyes['name'];
                     <td>'.$i++.'</td>
                     <td>'.$row['brand'].'</td>
                     <td>'.$row['model'].'</td>
+                    <td>'.$row['creation_date'].'</td>
+                    <td></td>
                     <td>'.$row['name'].'</td>
                     <td><button type="button"  class="btn btn-success g-mr-10 g-mb-15">Ремонт завершен</button></td>
                 </tr>';
@@ -191,6 +206,8 @@ $name = $employyes['name'];
                     <td>'.$i++.'</td>
                     <td>'.$row['brand'].'</td>
                     <td>'.$row['model'].'</td>
+                    <td>'.$row['creation_date'].'</td>
+                    <td></td>
                     <td>'.$row['name'].'</td>
                     <td><button type="button" class="btn btn-info g-mr-10 g-mb-15">Недостаточно деталей</button></td>
                 </tr>';
@@ -202,6 +219,8 @@ $name = $employyes['name'];
                     <td>'.$i++.'</td>
                     <td>'.$row['brand'].'</td>
                     <td>'.$row['model'].'</td>
+                    <td>'.$row['creation_date'].'</td>
+                    <td>'.$row['end_date'].'</td>
                     <td>'.$row['name'].'</td>
                     <td><button type="button" class="btn btn-secondary g-mr-10 g-mb-15">Завершено</button></td>
                 </tr>';

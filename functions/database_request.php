@@ -26,7 +26,7 @@ function close($link)
 function sql_find_all_car_by_employee($id_employee): mysqli_result|bool
 {
     $link = connect();
-    $sql = "SELECT r.id, c.brand, c.model, r.is_active, r.appointment_date, r.request_completed, r.repair_completed FROM request r 
+    $sql = "SELECT r.id, r.creation_date, r.end_date, r.appointment_date, c.brand, c.model, r.is_active, r.appointment_date, r.request_completed, r.repair_completed FROM request r 
   JOIN cars c ON r.id_car = c.id
   WHERE r.id_employees='$id_employee' 
   order by r.creation_date";
@@ -38,7 +38,7 @@ function sql_find_all_car_by_employee($id_employee): mysqli_result|bool
 function sql_find_all_car_by_admin(): mysqli_result|bool
 {
     $link = connect();
-    $sql = "SELECT r.id, c.brand, c.model, e.name, r.is_active, r.appointment_date, r.request_completed, r.repair_completed FROM request r 
+    $sql = "SELECT r.id, c.brand, r.creation_date, r.end_date, r.appointment_date, c.model, e.name, r.is_active, r.appointment_date, r.request_completed, r.repair_completed FROM request r 
   JOIN cars c ON r.id_car = c.id
   join employees e ON r.id_employees = e.id
   order by r.creation_date";
@@ -119,11 +119,8 @@ function add_request($username, $phone, $id_car, $id_defects): int|string
 //        var_dump($id_employees);
     $sql = "INSERT INTO `request` (`id_user`, `creation_date`, `id_car`, `id_employees`, `cost`)
   VALUES ('$id_user', CURRENT_DATE, '$id_car', '$id_employees', '$cost');";
-    //создание новой заявки
     $ret = mysqli_query($link, $sql);
-//        var_dump($ret);
     $id_request = mysqli_insert_id($link);
-//        var_dump($id_request);
     //сохранение поломок за конкретной заявкой
     save_defects($id_request, $id_defects);
     close($link);
@@ -297,7 +294,7 @@ function get_all_defects_by_id($id_request)
 function get_all_requests_by_id_user($id_user): mysqli_result|bool
 {
     $link = connect();
-    $sql = "select r.appointment_date, r.request_completed, r.repair_completed, r.is_active, r.creation_date, e.name from request r join employees e on e.id = r.id_employees where id_user = '$id_user'";
+    $sql = "select r.appointment_date, r.end_date, r.request_completed, r.repair_completed, r.is_active, r.creation_date, e.name from request r join employees e on e.id = r.id_employees where id_user = '$id_user'";
     $res = mysqli_query($link, $sql);
     close($link);
     return $res;
@@ -376,7 +373,7 @@ function set_repair_completed_defects($id_request, $id_defects)
 function set_request_completed($id_request)
 {
     $link = connect();
-    $sql = "update request set `request_completed` = 1 where id = '$id_request'";
+    $sql = "update request set `request_completed` = 1, `end_date` = CURRENT_DATE where id = '$id_request'";
     mysqli_query($link, $sql);
 
     close($link);
